@@ -2,20 +2,21 @@
 # Function to add a guest
 def add_guest(event_data):
 
-    print("\n========== ADD GUEST ==========")
+    print("\n----- Add Guest -----")
 
-    name = input("Enter guest name: ").strip()
+    # Get guest name
+    while True:
+        name = input("Enter guest name: ").strip()
 
-    if name == "":
-        print("Guest name cannot be empty.")
-        return
+        if name != "":
+            break
+        else:
+            print("Guest name cannot be empty.")
 
-    contact = input("Enter guest phone number or email: ").strip()
+    # Get guest contact information
+    contact = input("Enter phone number or email: ").strip()
 
-    if contact == "":
-        print("Contact information cannot be empty.")
-        return
-
+    # Create a dictionary for the guest
     guest = {
         "name": name,
         "contact": contact,
@@ -23,18 +24,20 @@ def add_guest(event_data):
         "attendance": ""
     }
 
+    # Create the guest list if it does not exist
     if "guests" not in event_data:
         event_data["guests"] = []
 
+    # Add the guest to the list
     event_data["guests"].append(guest)
 
-    print(name, "has been added successfully!")
+    print("\nGuest added successfully!")
 
 
-# Function to display all guests
+# Function to display the guest list
 def display_guests(event_data):
 
-    print("\n========== GUEST LIST ==========")
+    print("\n----- Guest List -----")
 
     guests = event_data.get("guests", [])
 
@@ -47,76 +50,42 @@ def display_guests(event_data):
         print("\nGuest", number)
         print("Name:", guest["name"])
         print("Contact:", guest["contact"])
-        print("RSVP Status:", guest["status"])
+        print("Status:", guest["status"])
 
-        attendance = guest.get("attendance", "")
-
-        if attendance != "":
-            print("Attendance:", attendance)
+        if guest["attendance"] != "":
+            print("Attendance:", guest["attendance"])
 
 
-# Function to update a guest's RSVP status
+# Function to update a guest's status
 def update_guest_status(event_data):
 
-    print("\n========== UPDATE GUEST STATUS ==========")
+    print("\n----- Update Guest Status -----")
 
     guests = event_data.get("guests", [])
 
-    name = input("Enter guest name: ").strip()
+    name = input("Enter the guest name: ").strip()
 
     for guest in guests:
 
         if guest["name"].lower() == name.lower():
 
-            print("1. Confirmed")
-            print("2. Pending")
-            print("3. Declined")
+            print("\n1. Confirmed")
+            print("2. Declined")
+            print("3. Pending")
 
-            choice = input("Enter new status: ")
+            choice = input("Select the new status (1-3): ").strip()
 
             if choice == "1":
                 guest["status"] = "confirmed"
             elif choice == "2":
-                guest["status"] = "pending"
-            elif choice == "3":
                 guest["status"] = "declined"
+            elif choice == "3":
+                guest["status"] = "pending"
             else:
                 print("Invalid choice.")
                 return
 
-            print("Guest status updated successfully!")
-            return
-
-    print("Guest not found.")
-
-
-# Function to update actual guest attendance
-def update_guest_attendance(event_data):
-
-    print("\n========== UPDATE ATTENDANCE ==========")
-
-    guests = event_data.get("guests", [])
-
-    name = input("Enter guest name: ").strip()
-
-    for guest in guests:
-
-        if guest["name"].lower() == name.lower():
-
-            print("1. Attended")
-            print("2. Absent")
-
-            choice = input("Enter attendance: ")
-
-            if choice == "1":
-                guest["attendance"] = "attended"
-            elif choice == "2":
-                guest["attendance"] = "absent"
-            else:
-                print("Invalid choice.")
-                return
-
-            print("Attendance updated successfully!")
+            print("\nGuest status updated successfully!")
             return
 
     print("Guest not found.")
@@ -125,11 +94,11 @@ def update_guest_attendance(event_data):
 # Function to remove a guest
 def remove_guest(event_data):
 
-    print("\n========== REMOVE GUEST ==========")
+    print("\n----- Remove Guest -----")
 
     guests = event_data.get("guests", [])
 
-    name = input("Enter guest name to remove: ").strip()
+    name = input("Enter the guest name to remove: ").strip()
 
     for guest in guests:
 
@@ -137,7 +106,7 @@ def remove_guest(event_data):
 
             guests.remove(guest)
 
-            print(name, "has been removed.")
+            print("\nGuest removed successfully!")
             return
 
     print("Guest not found.")
@@ -146,7 +115,7 @@ def remove_guest(event_data):
 # Function to display guest statistics
 def display_guest_statistics(event_data):
 
-    print("\n========== GUEST STATISTICS ==========")
+    print("\n----- Guest Statistics -----")
 
     guests = event_data.get("guests", [])
 
@@ -168,11 +137,43 @@ def display_guest_statistics(event_data):
     print("Total Guests:", len(guests))
     print("Confirmed:", confirmed)
     print("Pending:", pending)
-    print("Declined:", declined)
+    print("Not Attending:", declined)
+
+
+# Function to track actual guest attendance
+def update_guest_attendance(event_data):
+
+    print("\n----- Update Guest Attendance -----")
+
+    guests = event_data.get("guests", [])
+
+    name = input("Enter the guest name: ").strip()
+
+    for guest in guests:
+
+        if guest["name"].lower() == name.lower():
+
+            print("\n1. Attended")
+            print("2. Absent")
+
+            choice = input("Select attendance (1-2): ").strip()
+
+            if choice == "1":
+                guest["attendance"] = "attended"
+            elif choice == "2":
+                guest["attendance"] = "absent"
+            else:
+                print("Invalid choice.")
+                return
+
+            print("\nGuest attendance updated successfully!")
+            return
+
+    print("Guest not found.")
 
 
 # Main function called by main.py
-def view_guest_management(event_data):
+def manage_guests(event_data):
 
     while True:
 
@@ -180,12 +181,12 @@ def view_guest_management(event_data):
         print("1. Add Guest")
         print("2. Display Guest List")
         print("3. Update Guest Status")
-        print("4. Update Guest Attendance")
-        print("5. Remove Guest")
-        print("6. Display Guest Statistics")
+        print("4. Remove Guest")
+        print("5. Display Guest Statistics")
+        print("6. Update Guest Attendance")
         print("7. Return to Main Menu")
 
-        choice = input("\nEnter your choice (1-7): ")
+        choice = input("\nEnter your choice (1-7): ").strip()
 
         if choice == "1":
             add_guest(event_data)
@@ -197,13 +198,13 @@ def view_guest_management(event_data):
             update_guest_status(event_data)
 
         elif choice == "4":
-            update_guest_attendance(event_data)
-
-        elif choice == "5":
             remove_guest(event_data)
 
-        elif choice == "6":
+        elif choice == "5":
             display_guest_statistics(event_data)
+
+        elif choice == "6":
+            update_guest_attendance(event_data)
 
         elif choice == "7":
             print("Returning to Main Menu...")
