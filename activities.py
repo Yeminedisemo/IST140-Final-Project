@@ -1,9 +1,7 @@
-#imports the datetime module to make sure that the start time entered is a real time
 from datetime import datetime
 
 
-# Function to get a valid start time from the user
-# The time is stored as HH:MM (24-hour) so that sorting by start time works correctly
+# Gets a valid start time (24-hour HH:MM)
 def get_start_time(prompt):
 
     while True:
@@ -11,17 +9,14 @@ def get_start_time(prompt):
         start_time = input(prompt).strip()
 
         try:
-            # Check that the time is a real time in 24-hour HH:MM format
             time = datetime.strptime(start_time, "%H:%M")
-
-            # Return the time with a leading zero (for example 09:00)
             return time.strftime("%H:%M")
 
         except ValueError:
-            print("Invalid time. Please enter the time as HH:MM (24-hour), for example 14:30.")
+            print("Invalid time. Please enter the time as HH:MM, for example 14:30.")
 
 
-# Function to get a valid duration in minutes from the user
+# Gets a valid duration in minutes
 def get_duration(prompt):
 
     while True:
@@ -31,15 +26,14 @@ def get_duration(prompt):
         if minutes.isdecimal() and int(minutes) >= 1:
             return f"{int(minutes)} minutes"
         else:
-            print("Invalid input. Please enter a whole number of minutes (1 or more).")
+            print("Invalid input. Please enter a whole number of minutes.")
 
 
-# Function to add an activity
+# Adds an activity
 def add_activity(event_data):
 
     print("\n----- Add Activity -----")
 
-    # Get activity name
     while True:
 
         name = input("Enter activity name: ").strip()
@@ -49,14 +43,10 @@ def add_activity(event_data):
         else:
             print("Activity name cannot be empty.")
 
-    # Get the start time and duration
     start_time = get_start_time("Enter the start time (HH:MM, 24-hour): ")
     duration = get_duration("Enter the duration in minutes: ")
-
-    # Get the description
     description = input("Enter a description of the activity: ").strip()
 
-    # Create a dictionary to store the activity information
     activity = {
         "name": name,
         "start_time": start_time,
@@ -64,35 +54,30 @@ def add_activity(event_data):
         "description": description
     }
 
-    # Create the activities list if it does not exist
     if "activities" not in event_data:
         event_data["activities"] = []
 
-    # Add the activity to the list
     event_data["activities"].append(activity)
 
     print("\nActivity added successfully!")
 
 
-# Function to display the activity schedule
+# Displays the activities sorted by start time
 def display_activities(event_data):
 
     print("\n----- Event Activities and Schedule -----")
 
     activities = event_data.get("activities", [])
 
-    # Check if any activities have been added
     if len(activities) == 0:
         print("No activities have been added.")
         return
 
-    # Sort activities according to start time
     sorted_activities = sorted(
         activities,
         key=lambda activity: activity["start_time"]
     )
 
-    # Display each activity and its information
     for number, activity in enumerate(sorted_activities, start=1):
 
         print("\nActivity", number)
@@ -102,7 +87,7 @@ def display_activities(event_data):
         print("Description:", activity["description"])
 
 
-# Function to update an activity
+# Updates an activity
 def update_activity(event_data):
 
     print("\n----- Update Activity -----")
@@ -123,7 +108,6 @@ def update_activity(event_data):
             choice = input("What would you like to update? (1-4): ").strip()
 
             if choice == "1":
-                # If the user just presses enter, the original name is kept
                 new_name = input(f"Enter the activity name ({activity['name']}): ").strip()
                 if new_name != "":
                     activity["name"] = new_name
@@ -155,7 +139,7 @@ def update_activity(event_data):
     print("Activity not found.")
 
 
-# Function to remove an activity
+# Removes an activity
 def remove_activity(event_data):
 
     print("\n----- Remove Activity -----")
@@ -207,4 +191,4 @@ def manage_activities(event_data):
             break
 
         else:
-            print("Invalid choice. Please try again.")#activities.py
+            print("Invalid choice. Please try again.")
