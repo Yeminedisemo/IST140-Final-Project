@@ -34,14 +34,19 @@ def add_activity(event_data):
 
     print("\n----- Add Activity -----")
 
+    # Existing activities, used to block duplicate names
+    activities = event_data.get("activities", [])
+
     while True:
 
         name = input("Enter activity name: ").strip()
 
-        if name != "":
-            break
-        else:
+        if name == "":
             print("Activity name cannot be empty.")
+        elif any(a["name"].lower() == name.lower() for a in activities):
+            print("An activity with that name already exists. Please use a different name.")
+        else:
+            break
 
     start_time = get_start_time("Enter the start time (HH:MM, 24-hour): ")
     duration = get_duration("Enter the duration in minutes: ")
@@ -109,6 +114,10 @@ def update_activity(event_data):
 
             if choice == "1":
                 new_name = input(f"Enter the activity name ({activity['name']}): ").strip()
+                if any(other is not activity and other["name"].lower() == new_name.lower()
+                       for other in activities):
+                    print("Another activity already has that name. Name not changed.")
+                    return
                 if new_name != "":
                     activity["name"] = new_name
 

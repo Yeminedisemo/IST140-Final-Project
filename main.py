@@ -29,6 +29,16 @@ def main():
         #Create the event and its relating information
         #Creates a new event and gets information for that event
         if choice == "1":
+            #warns the user before replacing an existing event, since this erases everything
+            if event_data:
+                confirm = input(
+                    "An event already exists. Creating a new one will erase all event data "
+                    "(guests, expenses, activities, and reviews). Continue? (y/n): "
+                ).strip().lower()
+                #anything other than y cancels and returns to the menu
+                if confirm != "y":
+                    print("Event creation cancelled. Use option 3 to update the existing event.")
+                    continue
             #calls the function from the overall_event_info module and stores the results in the event_data dictionary
             event_data = overall_event_info.get_event_info()
         #displays the event information if it exists

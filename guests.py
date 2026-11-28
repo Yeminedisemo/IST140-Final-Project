@@ -1,17 +1,21 @@
-
 # Function to add a guest
 def add_guest(event_data):
 
     print("\n----- Add Guest -----")
 
+    # Existing guests, used to block duplicate names
+    guests = event_data.get("guests", [])
+
     # Get guest name
     while True:
         name = input("Enter guest name: ").strip()
 
-        if name != "":
-            break
-        else:
+        if name == "":
             print("Guest name cannot be empty.")
+        elif any(g["name"].lower() == name.lower() for g in guests):
+            print("A guest with that name already exists. Please use a different name (for example, add a last initial).")
+        else:
+            break
 
     # Get guest contact information
     contact = input("Enter phone number or email: ").strip()
